@@ -14,11 +14,13 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     NetworkRunner _runner;
 
     bool _mouseButton0;
+    bool _mouseButton1;
 
     void Update()
     {
         // 素早いタップを見逃さないようにUpdate()で処理
-        _mouseButton0 = _mouseButton0 | Input.GetMouseButton(0);
+        _mouseButton0 = _mouseButton0 || Input.GetMouseButton(0);
+        _mouseButton1 = _mouseButton1 || Input.GetMouseButton(1);
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -78,7 +80,12 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             _mouseButton0 = false;
         }
 
-        
+        if (_mouseButton1)
+        {
+            data.buttons |= NetworkInputData.MOUSEBUTTON2;
+            _mouseButton1 = false;
+        }
+
         input.Set(data);
     }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken token){}
