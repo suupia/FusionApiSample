@@ -13,6 +13,14 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     NetworkRunner _runner;
 
+    bool _mouseButton0;
+
+    void Update()
+    {
+        // 素早いタップを見逃さないようにUpdate()で処理
+        _mouseButton0 = _mouseButton0 | Input.GetMouseButton(0);
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
@@ -63,6 +71,13 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         if (Input.GetKey(KeyCode.D))
             data.direction += Vector3.right;
+
+        if (_mouseButton0)
+        {
+            data.buttons |= NetworkInputData.MOUSEBUTTON1;
+            _mouseButton0 = false;
+        }
+
         
         input.Set(data);
     }
