@@ -6,11 +6,11 @@ using Fusion;
 
 public class Player : NetworkBehaviour
 {
-    NetworkCharacterController _cc;
+    NetworkCharacterControllerPrototype _cc;
 
     void Awake()
     {
-        _cc = GetComponent<NetworkCharacterController>();
+        _cc = GetComponent<NetworkCharacterControllerPrototype>();
     }
 
     public override void FixedUpdateNetwork()
