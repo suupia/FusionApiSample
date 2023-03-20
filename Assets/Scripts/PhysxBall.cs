@@ -14,7 +14,7 @@ public class PhysxBall : NetworkBehaviour
         GetComponent<Rigidbody>().velocity = forward;
     }
 
-    public void FixedUpdateNetwork()
+    public override void FixedUpdateNetwork()
     {
         if (life.Expired(Runner))
         {
