@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UnityEditor;
+using Object = UnityEngine.Object;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
@@ -17,6 +20,7 @@ public class Player : NetworkBehaviour
     Vector3 _forward;
 
     Material _material;
+    Text _message;
 
     Material material
     {
@@ -32,9 +36,31 @@ public class Player : NetworkBehaviour
         changed.Behaviour.material.color = Color.white;
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void RPC_SendMessage(string message, RpcInfo info = default)
+    {
+        if (_message == null) _message = FindObjectOfType<Text>();
+        if (info.IsInvokeLocal)
+        {
+            message = $"You said : {message}\n";
+        }
+        else
+        {
+            message = $"Some other player said: {message}\n";
+        }
+        _message.text += message;
+    }
     void Awake()
     {
         _cc = GetComponent<NetworkCharacterControllerPrototype>();
+    }
+
+    void Update()
+    {
+        if (Object.HasInputAuthority && Input.GetKeyDown(KeyCode.R))
+        {
+            RPC_SendMessage("Hey Mate!");
+        }
     }
 
     public override void FixedUpdateNetwork()
